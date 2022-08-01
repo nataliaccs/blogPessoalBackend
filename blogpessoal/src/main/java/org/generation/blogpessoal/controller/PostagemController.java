@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/postagem")
 @CrossOrigin("*")
 public class PostagemController {
-	
+
 	@Autowired
 	private PostagemRepository repository;
-	
+
 	@GetMapping
-	public ResponseEntity<List<Postagem>> GetAll(){
+	public ResponseEntity<List<Postagem>> GetAll() {
 		return ResponseEntity.ok(repository.findAll());
 	}
 }

@@ -1,16 +1,16 @@
 package org.generation.blogpessoal.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.UpdateTimestamp;
 
 
 @Entity
@@ -29,8 +29,8 @@ public class Postagem {
 	@Size(min = 10, max = 500)
 	private String texto;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date data= new java.sql.Date(System.currentTimeMillis());
+	@UpdateTimestamp
+	private LocalDateTime data;
 
 	public long getId() {
 		return id;
@@ -56,11 +56,13 @@ public class Postagem {
 		this.texto = texto;
 	}
 
-	public Date getData() {
+	public LocalDateTime getData() {
 		return data;
 	}
 
-	public void setData(Date data) {
+	public void setData(LocalDateTime data) {
 		this.data = data;
 	}
+
+	
 }
