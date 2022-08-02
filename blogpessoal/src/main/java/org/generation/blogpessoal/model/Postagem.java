@@ -14,6 +14,8 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Entity
 @Table(name= "postagens")
@@ -36,6 +38,7 @@ public class Postagem {
 	private LocalDateTime data;
 	
 	@ManyToOne
+	@JsonIgnoreProperties("postagem")
 	private Tema tema;
 	
 
