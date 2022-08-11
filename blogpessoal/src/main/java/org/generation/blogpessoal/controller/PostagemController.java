@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.generation.blogpessoal.model.Postagem;
 import org.generation.blogpessoal.repository.PostagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/postagem")
@@ -26,6 +28,7 @@ public class PostagemController {
 
 	@Autowired
 	private PostagemRepository postagemRepository;
+	private CrudRepository<Postagem, Long> temaRepository;
 
 	@GetMapping
 	public ResponseEntity<List<Postagem>> GetAll() {
@@ -47,13 +50,19 @@ public class PostagemController {
 	
 	@PostMapping
 	public ResponseEntity<Postagem> postPostagem (@Valid @RequestBody Postagem postagem){
+		
+		if(temaRepository.existsById(postagem.getTema().getId()))
 		return ResponseEntity.status(HttpStatus.CREATED).body(postagemRepository.save(postagem));
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tema não existe!", null);
 	}
 	
 	
 	@PutMapping
-	public ResponseEntity<Postagem> putPostagem (@RequestBody Postagem postagem){
-		return ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem));
+	public ResponseEntity<Postagem> putPostagem (@Valid @RequestBody Postagem postagem){
+		return postagemRepository.findById(postagem.getId())
+				.map(resposta -> ResponseEntity.status(HttpStatus.OK)
+				.body(postagemRepository.save(postagem)))
+				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
 			
 	
