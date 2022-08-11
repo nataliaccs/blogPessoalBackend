@@ -1,13 +1,13 @@
 package org.generation.blogpessoal.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.generation.blogpessoal.model.Postagem;
 import org.generation.blogpessoal.repository.PostagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,7 +29,6 @@ public class PostagemController {
 
 	@Autowired
 	private PostagemRepository postagemRepository;
-	private CrudRepository<Postagem, Long> temaRepository;
 
 	@GetMapping
 	public ResponseEntity<List<Postagem>> GetAll() {
@@ -50,15 +50,13 @@ public class PostagemController {
 	
 	@PostMapping
 	public ResponseEntity<Postagem> postPostagem (@Valid @RequestBody Postagem postagem){
-		
-		if(temaRepository.existsById(postagem.getTema().getId()))
 		return ResponseEntity.status(HttpStatus.CREATED).body(postagemRepository.save(postagem));
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tema não existe!", null);
 	}
 	
 	
 	@PutMapping
 	public ResponseEntity<Postagem> putPostagem (@Valid @RequestBody Postagem postagem){
+		
 		return postagemRepository.findById(postagem.getId())
 				.map(resposta -> ResponseEntity.status(HttpStatus.OK)
 				.body(postagemRepository.save(postagem)))
@@ -66,8 +64,14 @@ public class PostagemController {
 	}
 			
 	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{id}")
 	public void deletePostagem(@PathVariable Long id) {
+		Optional<Postagem> postagem = postagemRepository.findById(id);
+		
+		if(postagem.isEmpty())
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		
 		postagemRepository.deleteById(id);
 	}	
 	
