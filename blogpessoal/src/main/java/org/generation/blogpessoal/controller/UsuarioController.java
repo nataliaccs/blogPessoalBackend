@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/usuarios")
 @CrossOrigin("*")
 public class UsuarioController {
 
@@ -33,7 +33,7 @@ public class UsuarioController {
 	private UsuarioService usuarioService;
 
 	
-	@GetMapping
+	@GetMapping("/all")
 	public ResponseEntity <List<Usuario>> getAll(){
 		return ResponseEntity.ok(usuarioRepository.findAll());
 		
