@@ -1,2 +1,2 @@
 # BlogPessoal
- Projeto Blog Pessoal realizado no Bootcamp da Generation Brasil
+ Projeto Blog Pessoal - Back-End realizado no Bootcamp da Generation Brasil
